@@ -1,0 +1,151 @@
+<?php
+/**
+ * Response service
+ * @package core
+ * @version 0.0.1
+ */
+
+namespace Mim\Service;
+
+class Response extends \Mim\Service
+{
+    private $_cache = 0;
+    private $_content = '';
+    private $_cookies = [];
+    private $_headers = [];
+    private $_status = 200;
+    
+    public function addContent(string $text, bool $truncate=false): void{
+        if($truncate)
+            $this->_content = '';
+        $this->_content.= $text;
+    }
+    
+    public function addCookie(string $name, string $value, int $expires=604800): void{
+        $this->_cookies[$name] = (object)[
+            'name'    => $name,
+            'value'   => $value,
+            'expires' => $expires
+        ];
+    }
+    
+    public function addHeader(string $name, string $value, bool $append=true): void{
+        if(!isset($this->_headers[$name]) || !$append)
+            $this->_headers[$name] = [];
+        $this->_headers[$name][] = $value;
+    }
+    
+    public function getCache(): int{
+        return $this->_cache;
+    }
+    
+    public function getContent(): string{
+        return $this->_content;
+    }
+    
+    public function getCookie(string $name=null) {
+        if($name)
+            return $this->_cookies[$name] ?? null;
+        return $this->_cookies;
+    }
+    
+    public function getHeader(string $name=null): ?array{
+        if($name)
+            return $this->_headers[$name] ?? null;
+        return $this->_headers;
+    }
+    
+    public function getStatus(): int{
+        return $this->_status;
+    }
+    
+    public function redirect(string $url, int $code=302): void{
+        if($code !== 200){
+            header('Location: ' . $url, false, $code);
+            return;
+        }
+        
+        ob_start();
+        
+        http_response_code(200);
+        $tx = '<!DOCTYPE html>';
+        $tx.= '<html><head>';
+        $tx.= '<meta http-equiv="refresh" content="0; URL=\'' . $url . '\'" />';
+        $tx.= '</head><body></body></html>';
+        echo $tx;
+        ob_end_flush();
+        ob_flush();
+        flush();
+    }
+    
+    public function removeCache(): void{
+        $this->_cache = 0;
+    }
+    
+    public function removeContent(): void{
+        $this->_content = '';
+    }
+    
+    public function removeCookie(string $name=null): void{
+        if(!$name)
+            $this->_cookies = [];
+        elseif(isset($this->_cookies[$name]))
+            unset($this->_cookies[$name]);
+    }
+    
+    public function removeHeader(string $name=null, string $value=null): void{
+        if(!$name)
+            $this->_headers = [];
+        elseif(isset($this->_headers[$name])){
+            if(is_null($value))
+                unset($this->_headers[$name]);
+            elseif(in_array($value, $this->_headers[$name])){
+                $index = array_keys($this->_headers[$name], $value)[0];
+                array_splice($this->_headers[$name], $index, 1);
+            }
+        }
+    }
+    
+    // TODO
+    public function render(string $view, array $params=[], string $gate): void{
+        
+    }
+    
+    public function send(): void{
+        ob_start();
+        
+        // set status code
+        http_response_code($this->_status);
+        
+        // set headers
+        foreach($this->_headers as $name => $headers){
+            $length = count($headers);
+            foreach($headers as $value)
+                header($name . ': ' . $value, 1 === $length);
+        }
+        
+        // TODO
+        // handle expires stuff
+        // we're going to add ETag header here.
+        
+        // set cookies
+        foreach($this->_cookies as $name => $cookie)
+            setcookie($name, $cookie->value, $cookie->expires + time());
+        
+        // set content
+        echo $this->_content;
+        
+        // send response
+        ob_end_flush();
+        ob_flush();
+        flush();
+    }
+    
+    public function setCache(int $expires): void{
+        $this->_cache = $expires;
+    }
+    
+    public function setStatus(int $status=200): void{
+        $this->_status = $status;
+    }
+}
