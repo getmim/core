@@ -4,10 +4,12 @@ etc/cache/*
 !etc/cache/.gitkeep
 etc/cert/*
 !etc/cert/.gitkeep
-etc/log/error
+etc/log/error/*
 !etc/log/error/.gitkeep
-etc/log/access
+etc/log/access/*
 !etc/log/access/.gitkeep
+etc/temp/*
+!etc/temp/.gitkeep
 
 test/LibraryFsTest/mkdir/*
 !test/LibraryFsTest/mkdir/.gitkeep

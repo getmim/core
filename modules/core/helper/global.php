@@ -2,7 +2,7 @@
 /**
  * Global functions
  * @package core
- * @version 0.0.1
+ * @version 0.0.2
  */
 
 function alt(...$args){
@@ -17,21 +17,26 @@ function autoload_class_exists(string $class): bool{
 }
 
 function deb(...$args): void{
+    $is_cli = php_sapi_name() === 'cli';
     ob_start();
     
-    echo '<pre>';
+    if(!$is_cli)
+        echo '<pre>';
     foreach($args as $arg){
-        if(is_null($arg) || is_bool($arg))
-            var_dump($arg);
-        else{
+        if(is_null($arg)){
+            echo 'NULL';
+        }elseif(is_bool($arg)){
+            echo $arg ? 'TRUE' : 'FALSE';
+        }else{
             $arg = print_r($arg, true);
-            if(php_sapi_name() !== 'cli')
+            if(!$is_cli)
                 $arg = hs($arg);
             echo $arg;
         }
         echo PHP_EOL;
     }
-    echo '</pre>';
+    if(!$is_cli)
+        echo '</pre>';
     
     $ctx = ob_get_contents();
     ob_end_clean();

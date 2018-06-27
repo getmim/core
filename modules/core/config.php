@@ -2,12 +2,12 @@
 /**
  * Mim Core
  * @package core
- * @version 0.0.1
+ * @version 0.0.2
  */
 
 return [
     '__name' => 'core',
-    '__version' => '0.0.1',
+    '__version' => '0.0.2',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -17,77 +17,77 @@ return [
     ],
     '__files' => [
         'index.php' => ['install', 'update', 'remove'],
+        '.gitignore' => ['remove'],
+        'modules/.gitkeep' => ['remove'],
         'app' => ['install', 'remove'],
         'etc' => ['install', 'remove'],
-        'modules' => ['install', 'remove']
+        'modules/core' => ['install', 'update', 'remove']
     ],
     '__dependencies' => [
         'required' => [],
         'optional' => []
     ],
     '__inject' => [
-        'name' => [
-            '__info' => 'Application name',
-            '__type' => 'text'
+        [
+            'name' => 'name',
+            'question' => 'Application name',
+            'rule' => '!^.+$!'
         ],
-        'version' => [
-            '__info' => 'Application version',
-            '__type' => 'version',
-            '__default' => '0.0.1'
+        [
+            'name' => 'version',
+            'question' => 'Application version',
+            'default' => '0.0.1',
+            'rule' => '!^[0-9]+\.[0-9]+\.[0-9]+$!'
         ],
-        'host' => [
-            '__info' => 'Application hostname ( without scheme )',
-            '__type' => 'host',
-            '__default' => 'Mim\\Provider\\Cli::dHost'
+        [
+            'name' => 'host',
+            'question' => 'Application hostname, without scheme',
+            'rule' => '!^[a-z0-9-\.]+$!'
         ],
-        'timezone' => [
-            '__info' => 'Application default timezone ( default Asia/Jakarta )',
-            '__type' => 'Mim\\Provider\\Cli::vTimezone',
-            '__default' => 'Asia/Jakarta'
+        [
+            'name' => 'timezone',
+            'question' => 'Application timezone',
+            'default' => 'Asia/Jakarta',
+            'rule' => '!^.+$!'
         ],
-        'install' => [
-            '__info' => 'Application installation time',
-            '__type' => 'text',
-            '__default' => 'Mim\\Provider\\Cli::dInstall'
+        [
+            'name' => 'install',
+            'question' => 'Application installation time',
+            'default' => [
+                'class' => 'Mim\\Provider\\Cli',
+                'method' => 'dInstall'
+            ],
+            'rule' => '!^.+$!'
         ],
-        'secure' => [
-            '__info' => 'Is application use https',
-            '__type' => 'boolean',
-            '__default' => false
-        ],
-        'gates' => [
-            '$name' => [
-                '__info' => 'Gate name',
-                '__type' => 'text',
-                '__value' => [
-                    'host' => [
-                        '__info' => 'Gate host',
-                        '__type' => 'Mim\\Provider\\Cli::vGateHost',
-                        '__default' => 'Mim\\Provider\\Cli::dGateHost'
-                    ],
-                    'path' => [
-                        '__info' => 'Gate path',
-                        '__type' => 'Mim\\Provider\\Cli::vGatePath',
-                        '__default' => '/'
-                    ]
-                ]
-            ]
+        [
+            'name' => 'secure',
+            'question' => 'Use `https` scheme',
+            'default' => true,
+            'rule' => 'boolean'
         ]
     ],
     '__gitignore' => [
         'modules/*' => true,
         '!modules/.gitkeep' => true,
+        
         'etc/cache/*' => true,
         '!etc/cache/.gitkeep' => true,
+        
         'etc/cert/*' => true,
         '!etc/cert/.gitkeep' => true,
+        
         'etc/config/development.php' => true,
         'etc/config/production.php' => true,
         'etc/config/test.php' => true,
-        'etc/log/access' => true,
+        
+        'etc/log/access/*' => true,
         '!etc/log/access/.gitkeep' => true,
-        'etc/log/error' => true,
+        
+        'etc/log/error/*' => true,
         '!etc/log/error/.gitkeep' => true,
+        
+        'etc/temp/*' => true,
+        '!etc/temp/.gitkeep' => true
     ],
     'autoload' => [
         'classes' => [
@@ -106,6 +106,10 @@ return [
             'Mim\\Library' => [
                 'type' => 'file',
                 'base' => 'modules/core/library'
+            ],
+            'Mim\\Provider' => [
+                'type' => 'file',
+                'base' => 'modules/core/provider'
             ],
             'Mim\\Service' => [
                 'type' => 'file',

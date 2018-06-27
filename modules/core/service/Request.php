@@ -2,7 +2,7 @@
 /**
  * Request service
  * @package core
- * @version 0.0.1
+ * @version 0.0.2
  */
 
 namespace Mim\Service;
@@ -37,10 +37,12 @@ class Request extends \Mim\Service
             if($is_cli !== ($gate->host->value === 'CLI'))
                 continue;
             
-            if(!$is_cli && null === ($m_host = $this->_matchFilter($gate->host, $r_host)))
+            $sep = $is_cli ? ' ' : '.';
+            if(!$is_cli && null === ($m_host = $this->_matchFilter($gate->host, $r_host, $sep)))
                 continue;
             
-            if(null === ($m_path = $this->_matchFilter($gate->path, $r_path, ($is_cli?' ':'/'))))
+            $sep = $is_cli ? ' ' : '/';
+            if(null === ($m_path = $this->_matchFilter($gate->path, $r_path, $sep, true)))
                 continue;
             
             if($m_host){
@@ -118,7 +120,8 @@ class Request extends \Mim\Service
                 if(!$is_cli && !in_array($r_method, $route->_method))
                     continue;
                 
-                if(null === ($m_path = $this->_matchFilter($route->path, $r_path)))
+                $sep = $this->gate->host->value === 'CLI' ? ' ' : '/';
+                if(null === ($m_path = $this->_matchFilter($route->path, $r_path, $sep)))
                     continue;
                 
                 // set the route
@@ -170,7 +173,7 @@ class Request extends \Mim\Service
         return $this->_props['accept'];
     }
     
-    private function _matchFilter(object $filter, string $target, string $next=null): ?array{
+    private function _matchFilter(object $filter, string $target, string $sep='/', bool $next=false): ?array{
         $result = [
             'params' => []
         ];
@@ -184,8 +187,8 @@ class Request extends \Mim\Service
                     return null;
                 
                 // match the next character
-                if(substr($filter->value, -1) !== $next){
-                    $filter_value_n = ltrim($filter->value . $next);
+                if(substr($filter->value, -1) !== $sep){
+                    $filter_value_n = ltrim($filter->value . $sep);
                     $filter_value_len = strlen($filter_value_n);
                     if(substr($target, 0, $filter_value_len) !== $filter_value_n)
                         return null;
@@ -197,8 +200,11 @@ class Request extends \Mim\Service
         }elseif($filter->_type === 'regex'){
             if(!preg_match($filter->_value, $target, $match))
                 return null;
-            foreach($filter->params as $par => $type)
+            foreach($filter->params as $par => $type){
                 $result['params'][$par] = $match[$par];
+                if($type === 'rest')
+                    $result['params'][$par] = explode($sep, $result['params'][$par]);
+            }
         }else{
             return null;
         }
@@ -224,6 +230,37 @@ class Request extends \Mim\Service
         }
         
         return $result;
+    }
+    
+    public function forward(string $name, array $params=[]): void{
+        $c_gates  = include BASEPATH . $this->_file_gates;
+        $c_routes = include BASEPATH . $this->_file_routes;
+        
+        $gate_by_route = $c_routes->_gateof;
+        $gate_name = $gate_by_route->$name;
+        
+        // set the gate
+        foreach($c_gates as $gate){
+            if($gate->name === $gate_name){
+                $this->_props['gate'] = $gate;
+                break;
+            }
+        }
+        
+        // set the route
+        $route = $c_routes->$gate_name->$name;
+        $this->_props['route'] = $route;
+        
+        // set the params
+        $this->_props['param'] = (object)[];
+        foreach($params as $k => $v)
+            $this->_props['param']->$k = $v;
+        
+        // set handler
+        $this->_props['handler'] = $route->_handlers;
+        
+        // next
+        $this->next();
     }
     
     public function get(string $name=null, $def=null){
