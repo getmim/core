@@ -7,7 +7,8 @@
 
 namespace Mim\Service;
 
-class Router extends \Mim\Service{
+class Router extends \Mim\Service
+{
     
     private $_params = [];
     

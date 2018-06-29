@@ -2,10 +2,12 @@
 /**
  * Request service
  * @package core
- * @version 0.0.2
+ * @version 0.0.3
  */
 
 namespace Mim\Service;
+
+use Mim\Library\Router;
 
 class Request extends \Mim\Service
 {
@@ -24,38 +26,19 @@ class Request extends \Mim\Service
     }
     
     private function _fillGate(): void{
-        $gates = include BASEPATH . $this->_file_gates;
-        if(!$gates)
+        $result = Router::parseGate([
+            'file_gate' => $this->_file_gates,
+            'is_cli'    => $this->isCLI(),
+            'req_host'  => $this->host,
+            'req_path'  => $this->path
+        ]);
+
+        if(!$result)
             return;
-        $is_cli = $this->isCLI();
-        $r_host = $this->host;
-        $r_path = $this->path;
-        
-        foreach($gates as $gate){
-            $m_host = [];
-            
-            if($is_cli !== ($gate->host->value === 'CLI'))
-                continue;
-            
-            $sep = $is_cli ? ' ' : '.';
-            if(!$is_cli && null === ($m_host = $this->_matchFilter($gate->host, $r_host, $sep)))
-                continue;
-            
-            $sep = $is_cli ? ' ' : '/';
-            if(null === ($m_path = $this->_matchFilter($gate->path, $r_path, $sep, true)))
-                continue;
-            
-            if($m_host){
-                foreach($m_host['params'] as $k => $val)
-                    $this->_props['param']->$k = $val;
-            }
-            
-            foreach($m_path['params'] as $k => $val)
-                $this->_props['param']->$k = $val;
-            
-            $this->_props['gate'] = $gate;
-            break;
-        }
+
+        $this->_props['gate'] = $result['gate'];
+        foreach($result['param'] as $k => $val)
+            $this->_props['param']->$k = $val;
     }
     
     private function _fillProps(): void{
@@ -104,45 +87,28 @@ class Request extends \Mim\Service
     private function _fillRoute(): void{
         if(!$this->gate)
             return;
-        
-        $use404 = true;
-        $routes = [];
-        
-        $is_cli = $this->isCLI();
-        $r_path = $this->path;
-        $r_method = $this->method;
-        $p_sep  = $is_cli ? ' ' : '/';
-        
-        $gates = include BASEPATH . $this->_file_routes;
-        if($gates && property_exists($gates, $this->gate->name)){
-            $routes = $gates->{$this->gate->name};
-            foreach($routes as $route){
-                if(!$is_cli && !in_array($r_method, $route->_method))
-                    continue;
-                
-                $sep = $this->gate->host->value === 'CLI' ? ' ' : '/';
-                if(null === ($m_path = $this->_matchFilter($route->path, $r_path, $sep)))
-                    continue;
-                
-                // set the route
-                $this->_props['route'] = $route;
-                
-                // set the params
-                foreach($m_path['params'] as $k => $v)
-                    $this->_props['param']->$k = $v;
-                
-                // set handler
-                $this->_props['handler'] = $route->_handlers;
-                $use404 = false;
-                break;
-            }
-        }
-        
+
+        $result = Router::parseRoute([
+            'file_routes' => $this->_file_routes,
+            'is_cli'      => $this->isCLI(),
+            'req_host'    => $this->host,
+            'req_path'    => $this->path,
+            'req_method'  => $this->method,
+            'req_gate'    => $this->gate
+        ]);
+
         // find the route
-        if($use404){
+        if(!$result){
             $route = $this->gate->errors->{'404'};
             $this->_props['route'] = $route;
             $this->_props['handler'] = $route->_handlers;
+            
+        }else{
+            $this->_props['route'] = $result['route'];
+            $this->_props['handler'] = $result['route']->_handlers;
+
+            foreach($result['param'] as $k => $v)
+                $this->_props['param']->$k = $v;
         }
     }
     
@@ -171,45 +137,6 @@ class Request extends \Mim\Service
         ];
         
         return $this->_props['accept'];
-    }
-    
-    private function _matchFilter(object $filter, string $target, string $sep='/', bool $next=false): ?array{
-        $result = [
-            'params' => []
-        ];
-        
-        if($filter->_type === 'text'){
-            $value_len  = strlen($filter->value);
-            $target_len = strlen($target);
-            
-            if($next && $value_len !== $target_len){
-                if(substr($target, 0, $value_len) !== $filter->value)
-                    return null;
-                
-                // match the next character
-                if(substr($filter->value, -1) !== $sep){
-                    $filter_value_n = ltrim($filter->value . $sep);
-                    $filter_value_len = strlen($filter_value_n);
-                    if(substr($target, 0, $filter_value_len) !== $filter_value_n)
-                        return null;
-                }
-            }else{
-                if($filter->value != $target)
-                    return null;
-            }
-        }elseif($filter->_type === 'regex'){
-            if(!preg_match($filter->_value, $target, $match))
-                return null;
-            foreach($filter->params as $par => $type){
-                $result['params'][$par] = $match[$par];
-                if($type === 'rest')
-                    $result['params'][$par] = explode($sep, $result['params'][$par]);
-            }
-        }else{
-            return null;
-        }
-        
-        return $result;
     }
     
     public function __get(string $name){
