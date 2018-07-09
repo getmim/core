@@ -9,6 +9,10 @@ namespace Mim\Library;
 
 class Router
 {
+
+    static $all_routes;
+    static $all_gates;
+
 	private static function _matchFilter(object $filter, string $target, string $sep='/', bool $next=false): ?array{
 		$result = [
             'params' => []
@@ -49,7 +53,8 @@ class Router
 	}
 
 	static function parseGate(array $options): ?array{
-		$gates = include BASEPATH . $options['file_gate'];
+		self::$all_gates = $gates = include BASEPATH . $options['file_gate'];
+
         if(!$gates)
             return null;
 
@@ -106,7 +111,7 @@ class Router
         $p_sep    = $is_cli ? ' ' : '/';
         $gate     = $options['req_gate'];
 
-        $gates = include BASEPATH . $options['file_routes'];
+        self::$all_routes = $gates = include BASEPATH . $options['file_routes'];
 
         if($gates && property_exists($gates, $gate->name)){
             $routes = $gates->{$gate->name};

@@ -32,6 +32,11 @@ class Logger {
                 foreach($trances as $trace){
                     if(!isset($trace['file']))
                         continue;
+                    
+                    $file_basename = basename($trace['file']);
+                    if($file_basename === 'Mim.php')
+                        continue;
+                    
                     echo ' - ' . $trace['file'] . ' ( ' . $trace['line'] . ' )' . $nl;
                 }
             }else{
@@ -40,6 +45,11 @@ class Logger {
                 foreach($trances as $trace){
                     if(!isset($trace['file']))
                         continue;
+                    
+                    $file_basename = basename($trace['file']);
+                    if($file_basename === 'Mim.php')
+                        continue;
+                    
                     echo '<li>';
                     echo $trace['file'] . ' ( ' . $trace['line'] . ' )';
                     echo '</li>';

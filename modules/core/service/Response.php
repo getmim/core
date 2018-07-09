@@ -105,10 +105,13 @@ class Response extends \Mim\Service
             }
         }
     }
-    
-    // TODO
-    public function render(string $view, array $params=[], string $gate): void{
-        
+
+    public function render(string $view, array $params=[], string $gate=null): void{
+        if(!module_exists('lib-view'))
+            return;
+        $content = \LibView\Library\View::render($view, $params, $gate);
+        if(!is_null($content))
+            $this->addContent($content);
     }
     
     public function send(): void{
