@@ -37,7 +37,7 @@ class Router extends \Mim\Service
 
         $scheme = $this->config->secure ? 'https://' : 'http://';
 
-        $result = $scheme . $used_gate->host->value;
+        $result = $scheme . $used_gate->asset->host;
         foreach($this->_params as $pk => $pv)
             $result = str_replace('!(:' . $pk . ')!', $pv, $result);
 
