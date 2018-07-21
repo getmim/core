@@ -71,13 +71,9 @@ class Request extends \Mim\Service
             $type = explode('/', $type)[1];
         $this->_props['type'] = strtolower($type);
         
+        // path
         if($this->isCLI()){
-            $paths = $_SERVER['argv'] ?? [];
-            if(isset($paths[0])){
-                if(preg_match('!index.php$!', $paths[0]))
-                    array_shift($paths);
-            }
-            $paths = implode(' ', $paths);
+            $paths = $this->_getCLICommand();
             $this->_props['path'] = trim($paths);
         }else{
             $this->_props['path'] = trim('/' . trim(preg_replace('!\?.+$!', '', $this->getServer('REQUEST_URI')), '/'));
@@ -137,6 +133,38 @@ class Request extends \Mim\Service
         ];
         
         return $this->_props['accept'];
+    }
+
+    private function _getCLICommand(): ?string{
+        if(!$this->isCLI())
+            return null;
+
+        $commands = $_SERVER['argv'] ?? [];
+        if(!$commands)
+            return null;
+
+        if(preg_match('!index.php$!', $commands[0]))
+            array_shift($commands);
+
+        // let's cleanup the command options
+        $next_value = false;
+        foreach($commands as $index => $cmd){
+            if(substr($cmd,0,1) === '-'){
+                unset($commands[$index]);
+                if(substr($cmd,1,1) === '-'){
+                    if(false === strstr($cmd, '='))
+                        $next_value = true;
+                }else{
+                    if(strlen($cmd) == 2)
+                        $next_value = true;
+                }
+            }elseif($next_value){
+                unset($commands[$index]);
+                $next_value = false;
+            }
+        }
+
+        return implode(' ', $commands);
     }
     
     public function __get(string $name){

@@ -39,7 +39,7 @@ class Router extends \Mim\Service
 
         $result = $scheme . $used_gate->asset->host;
         foreach($this->_params as $pk => $pv)
-            $result = str_replace('!(:' . $pk . ')!', $pv, $result);
+            $result = str_replace('(:' . $pk . ')', $pv, $result);
 
         $result.= '/theme/' . $gate . '/static/' . $path;
         if($version)
@@ -49,6 +49,31 @@ class Router extends \Mim\Service
     }
     
     public function to(string $name, array $params=[], array $query=[]): ?string{
-        return '';
+        $gates  = \Mim\Library\Router::$all_gates;
+        $routes = \Mim\Library\Router::$all_routes;
+        $gate   = $routes->_gateof->$name;
+        $route  = $routes->$gate->$name;
+
+        $used_gate = null;
+        foreach($gates as $gt){
+            if($gt->name != $gate)
+                continue;
+            $used_gate = $gt;
+            break;
+        }
+
+        if($used_gate->host->value === 'CLI')
+            $result = $route->path->value;
+        else{
+            $scheme = $this->config->secure ? 'https://' : 'http://';
+            $result = $scheme . $used_gate->host->value . $route->path->value;
+        }
+
+        $used_params = array_replace($this->_params, $params);
+
+        foreach($used_params as $pk => $pv)
+            $result = str_replace('(:' . $pk . ')', $pv, $result);
+
+        return $result;
     }
 }
