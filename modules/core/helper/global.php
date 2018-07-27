@@ -100,6 +100,10 @@ function prop_as_key(array $array, string $prop): array{
     return $res;
 }
 
+function to_ns(string $str): string{
+    return str_replace(' ', '', ucwords(str_replace('-', ' ', $str)));
+}
+
 function to_source($data, $space=0, $escape=true) {
     if(is_string($data)){
         if($escape)
