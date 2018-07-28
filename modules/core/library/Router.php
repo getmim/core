@@ -13,8 +13,8 @@ class Router
     static $all_routes;
     static $all_gates;
 
-	private static function _matchFilter(object $filter, string $target, string $sep='/', bool $next=false): ?array{
-		$result = [
+    private static function _matchFilter(object $filter, string $target, string $sep='/', bool $next=false): ?array{
+        $result = [
             'params' => []
         ];
         
@@ -50,21 +50,21 @@ class Router
         }
         
         return $result;
-	}
+    }
 
-	static function parseGate(array $options): ?array{
-		self::$all_gates = $gates = include BASEPATH . $options['file_gate'];
+    static function parseGate(array $options): ?array{
+        self::$all_gates = $gates = include BASEPATH . $options['file_gate'];
 
         if(!$gates)
             return null;
 
-    	$is_cli = $options['is_cli'];
+        $is_cli = $options['is_cli'];
         $r_host = $options['req_host'];
         $r_path = $options['req_path'];
 
         $result = [
-        	'gate' => null,
-        	'param' => (object)[]
+            'gate' => null,
+            'param' => (object)[]
         ];
 
         foreach($gates as $gate){
@@ -83,29 +83,29 @@ class Router
             
             if($m_host){
                 foreach($m_host['params'] as $k => $val)
-                	$result['param']->$k = $val;
+                    $result['param']->$k = $val;
             }
             
             foreach($m_path['params'] as $k => $val)
-            	$result['param']->$k = $val;
+                $result['param']->$k = $val;
             
             $result['gate'] = $gate;
             break;
         }
-
+        
         if($result['gate'])
-        	return $result;
-    	return null;
-	}
+            return $result;
+        return null;
+    }
 
-	static function parseRoute(array $options): ?array{
-		$result = [
-			'route' => null,
-			'param' => (object)[],
-			'handlers' => []
-		];
+    static function parseRoute(array $options): ?array{
+        $result = [
+            'route' => null,
+            'param' => (object)[],
+            'handlers' => []
+        ];
 
-		$is_cli   = $options['is_cli'];
+        $is_cli   = $options['is_cli'];
         $r_path   = $options['req_path'];
         $r_method = $options['req_method'];
         $p_sep    = $is_cli ? ' ' : '/';
@@ -127,13 +127,13 @@ class Router
                 
                 // set the params
                 foreach($m_path['params'] as $k => $v)
-                	$result['param']->$k = $v;
+                    $result['param']->$k = $v;
                 break;
             }
         }
 
         if($result['route'])
-        	return $result;
+            return $result;
         return null;
-	}
+    }
 }

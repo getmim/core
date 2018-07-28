@@ -149,7 +149,9 @@ class Request extends \Mim\Service
         // let's cleanup the command options
         $next_value = false;
         foreach($commands as $index => $cmd){
-            if(substr($cmd,0,1) === '-'){
+            if($cmd === '-'){
+                $next_value = false;
+            }elseif(substr($cmd,0,1) === '-'){
                 unset($commands[$index]);
                 if(substr($cmd,1,1) === '-'){
                     if(false === strstr($cmd, '='))
@@ -163,7 +165,7 @@ class Request extends \Mim\Service
                 $next_value = false;
             }
         }
-
+        
         return implode(' ', $commands);
     }
     
