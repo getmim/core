@@ -50,12 +50,14 @@ class Mim {
         // load required classes
         spl_autoload_register(function($class){
             $file = Mim::$_config->autoload->classes->$class ?? null;
-            
-            if(!$file)
-                return trigger_error('Class `' . $class . '` not registered');
-            
-            include BASEPATH . '/' . $file;
+            if($file)
+                include BASEPATH . '/' . $file;
         });
+
+        // load commposer autoload
+        $composer_autoload = BASEPATH . '/vendor/autoload.php';
+        if(is_file($composer_autoload))
+            include $composer_autoload;
     }
     
     private static function _env(): void {
