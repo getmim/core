@@ -135,5 +135,6 @@ return [
         'core' => [
             'PHP >= 7.2' => 'Mim\\Server\\PHP::version'
         ]
-    ]
+    ],
+    'callback' => []
 ];
