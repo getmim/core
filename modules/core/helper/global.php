@@ -16,6 +16,26 @@ function autoload_class_exists(string $class): bool{
     return !!(Mim::$_config->autoload->classes->$class ?? false);
 }
 
+function array_flatten(array $array, string $prefix=''): array{
+    $result = [];
+    foreach($array as $key => $val){
+        $c_prefix = $prefix . $key;
+        if(is_array($val) || is_object($val)){
+            $val = (array)$val;
+            if(is_indexed_array($val)){
+                $result[$c_prefix] = implode(', ', $val);
+            }else{
+                $res = array_flatten($val, $c_prefix . '.');
+                $result = array_merge($result, $res);
+            }
+        }else{
+            $result[$c_prefix] = $val;
+        }
+    }
+
+    return $result;
+}
+
 function deb(...$args): void{
     $is_cli = php_sapi_name() === 'cli';
     ob_start();
