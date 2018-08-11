@@ -65,6 +65,14 @@ function deb(...$args): void{
     exit;
 }
 
+function get_prop_value(object $object, string $fields){
+    $obj = clone $object;
+    $keys = explode('.', $fields);
+    foreach($keys as $ky)
+        $obj = $obj->$ky;
+    return $obj;
+}
+
 function group_by_prop(array $array, string $prop): array{
     $res = [];
     foreach($array as $arr){
