@@ -122,6 +122,18 @@ function prop_as_key(array $array, string $prop): array{
     return $res;
 }
 
+function to_attr(array $attrs): string{
+    $tx = '';
+    if(!$attrs)
+        return '';
+    foreach($attrs as $name => $val){
+        $tx.= ' ' . $name;
+        if(!is_null($val))
+            $tx.= '="' . $val . '"';
+    }
+    return $tx;
+}
+
 function to_ns(string $str): string{
     return str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $str)));
 }
