@@ -68,8 +68,11 @@ function deb(...$args): void{
 function get_prop_value(object $object, string $fields){
     $obj = clone $object;
     $keys = explode('.', $fields);
-    foreach($keys as $ky)
+    foreach($keys as $ky){
         $obj = $obj->$ky;
+        if(!is_object($obj))
+            return $obj;
+    }
     return $obj;
 }
 
