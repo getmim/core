@@ -151,6 +151,11 @@ class Request extends \Mim\Service
         foreach($commands as $index => $cmd){
             if($cmd === '-'){
                 $next_value = false;
+
+            }elseif($cmd === '='){
+                unset($commands[$index]);
+                $next_value = true;
+
             }elseif(substr($cmd,0,1) === '-'){
                 unset($commands[$index]);
                 if(substr($cmd,1,1) === '-'){
@@ -160,6 +165,7 @@ class Request extends \Mim\Service
                     if(strlen($cmd) == 2)
                         $next_value = true;
                 }
+
             }elseif($next_value){
                 unset($commands[$index]);
                 $next_value = false;
