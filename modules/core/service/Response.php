@@ -132,8 +132,9 @@ class Response extends \Mim\Service
         // we're going to add ETag header here.
         
         // set cookies
+        $s_cookie = \Mim::$app->config->secure;
         foreach($this->_cookies as $name => $cookie)
-            setcookie($name, $cookie->value, $cookie->expires + time());
+            setcookie($name, $cookie->value, $cookie->expires + time(), '', '', $s_cookie, true);
         
         // set content
         echo $this->_content;
