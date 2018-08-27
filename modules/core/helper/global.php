@@ -126,7 +126,7 @@ function objectify($arr){
 function prop_as_key(array $array, string $prop): array{
     $res = [];
     foreach($array as $arr){
-        $key = $arr[$prop];
+        $key = is_array($arr) ? $arr[$prop] : $arr->$prop;
         $res[$key] = $arr;
     }
     
