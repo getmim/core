@@ -133,8 +133,9 @@ class Response extends \Mim\Service
         
         // set cookies
         $s_cookie = \Mim::$app->config->secure;
+        $s_domain = '.' . \Mim::$app->config->host;
         foreach($this->_cookies as $name => $cookie)
-            setcookie($name, $cookie->value, $cookie->expires + time(), '', '', $s_cookie, true);
+            setcookie($name, $cookie->value, $cookie->expires + time(), '/', $s_domain, $s_cookie, true);
         
         // set content
         echo $this->_content;
