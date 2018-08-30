@@ -13,5 +13,5 @@ interface GateController
     public function show404Action(): void;
     
     public function show500(object $error): void;
-    public function show500Action(object $error): void;
+    public function show500Action(): void;
 }

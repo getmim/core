@@ -333,7 +333,7 @@ class Request extends \Mim\Service
         }
         
         if(!$handler){
-            Mim::$app->res->send();
+            \Mim::$app->res->send();
             return;
         }
         

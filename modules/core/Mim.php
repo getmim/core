@@ -77,6 +77,7 @@ class Mim {
         set_error_handler(function($no, $text, $file, $line){
             \Mim\Library\Logger::error($no, $text, $file, $line);
         });
+        set_exception_handler(['Mim\Library\Logger', 'exceptioned']);
     }
     
     private static function _timezone(): void{

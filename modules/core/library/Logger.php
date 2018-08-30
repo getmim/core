@@ -9,11 +9,24 @@ namespace Mim\Library;
 
 class Logger {
 
+    static $last_error;
+
     static function access($output){
         
     }
     
-    static function error($no, $text, $file, $line): void {
+    static function error($no, $text, $file, $line, $trances=[]): void {
+        self::$last_error = (object)[
+            'file' => $file,
+            'no'   => $no,
+            'line' => $line,
+            'text' => $text
+        ];
+
+        if(!$trances)
+            $trances = debug_backtrace();
+        self::$last_error->trace = $trances;
+
         $nl = PHP_EOL;
         
         $tx = date('Y-m-d H:i:s') . $nl;
@@ -23,45 +36,20 @@ class Logger {
         
         $path = BASEPATH . '/etc/log/error/' . date('/Y/m/d/h/') . uniqid() . '.txt';
         Fs::write($path, $tx);
-        
-        if(is_dev()){
-            $trances = debug_backtrace();
-            
-            if(php_sapi_name() === 'cli'){
-                echo $text . $nl;
-                foreach($trances as $trace){
-                    if(!isset($trace['file']))
-                        continue;
-                    
-                    $file_basename = basename($trace['file']);
-                    if($file_basename === 'Mim.php')
-                        continue;
-                    
-                    echo ' - ' . $trace['file'] . ' ( ' . $trace['line'] . ' )' . $nl;
-                }
-            }else{
-                echo $text . '<br>';
-                echo '<ul>';
-                foreach($trances as $trace){
-                    if(!isset($trace['file']))
-                        continue;
-                    
-                    $file_basename = basename($trace['file']);
-                    if($file_basename === 'Mim.php')
-                        continue;
-                    
-                    echo '<li>';
-                    echo $trace['file'] . ' ( ' . $trace['line'] . ' )';
-                    echo '</li>';
-                }
-                echo '</ul>';
-            }
-            exit;
-        }
-        
+
         if(\Mim::$app && \Mim::$app->req->gate){
             \Mim::$app->req->setProp('handler', \Mim::$app->req->gate->errors->{'500'}->_handlers);
             \Mim::$app->next();
         }
+    }
+
+    static function exceptioned($e){
+        self::error(
+            $e->getCode(),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+            $e->getTrace()
+        );
     }
 }
