@@ -41,6 +41,8 @@ class Logger {
             \Mim::$app->req->setProp('handler', \Mim::$app->req->gate->errors->{'500'}->_handlers);
             \Mim::$app->next();
         }
+
+        exit;
     }
 
     static function exceptioned($e){
