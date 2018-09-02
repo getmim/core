@@ -77,6 +77,8 @@ class Router extends \Mim\Service
         foreach($used_params as $pk => $pv)
             $result = str_replace('(:' . $pk . ')', $pv, $result);
 
+        if($query)
+            $result.= '?' . http_build_query($query);
         return $result;
     }
 }
