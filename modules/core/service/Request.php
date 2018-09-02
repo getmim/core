@@ -76,7 +76,7 @@ class Request extends \Mim\Service
             $paths = $this->_getCLICommand();
             $this->_props['path'] = trim($paths);
         }else{
-            $this->_props['path'] = trim('/' . trim(preg_replace('!\?.+$!', '', $this->getServer('REQUEST_URI')), '/'));
+            $this->_props['path'] = trim('/' . trim(preg_replace('!\?.*$!', '', $this->getServer('REQUEST_URI')), '/'));
         }
     }
     
