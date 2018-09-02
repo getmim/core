@@ -51,8 +51,11 @@ class Router extends \Mim\Service
     public function to(string $name, array $params=[], array $query=[]): ?string{
         $gates  = \Mim\Library\Router::$all_gates;
         $routes = \Mim\Library\Router::$all_routes;
-        $gate   = $routes->_gateof->$name;
-        $route  = $routes->$gate->$name;
+        $gate   = $routes->_gateof->$name ?? null;
+        $route  = $routes->$gate->$name ?? null;
+
+        if(!$gate)
+            trigger_error('Router named `' . $name . '` not found');
 
         $used_gate = null;
         foreach($gates as $gt){
