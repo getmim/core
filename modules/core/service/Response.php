@@ -114,7 +114,27 @@ class Response extends \Mim\Service
             $this->addContent($content);
     }
     
-    public function send(): void{
+    public function send(bool $callback=true): void{
+        $continue = true;
+
+        if($callback){
+            $callback = \Mim::$app->config->callback ?? null;
+            if($callback){
+                if(isset($callback->core->printing)){
+                    foreach($callback->core->printing as $handler){
+                        $class = $handler->class;
+                        $method= $handler->method;
+
+                        if(!$class::$method())
+                            $continue = false;
+                    }
+                }
+            }
+
+            if(!$continue)
+                return;
+        }
+
         ob_start();
         
         // set status code
@@ -126,11 +146,7 @@ class Response extends \Mim\Service
             foreach($headers as $value)
                 header($name . ': ' . $value, 1 === $length);
         }
-        
-        // TODO
-        // handle expires stuff
-        // we're going to add ETag header here.
-        
+
         // set cookies
         $s_cookie = \Mim::$app->config->secure;
         $s_domain = '.' . \Mim::$app->config->host;

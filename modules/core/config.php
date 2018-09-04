@@ -7,7 +7,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '0.0.4',
+    '__version' => '0.0.5',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -135,6 +135,5 @@ return [
         'core' => [
             'PHP >= 7.2' => 'Mim\\Server\\PHP::version'
         ]
-    ],
-    'callback' => []
+    ]
 ];

@@ -10,6 +10,6 @@ namespace Mim\Service;
 class Config extends \Mim\Service{
     
     public function __get(string $name){
-        return \Mim::$_config->$name;
+        return \Mim::$_config->$name ?? null;
     }
 }

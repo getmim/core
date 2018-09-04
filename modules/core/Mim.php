@@ -39,6 +39,21 @@ class Mim {
         self::_timezone();
         self::_error();
         self::$app = new Mim;
+
+        // call the `core->ready` callback
+        if(isset(self::$_config->callback)
+            && isset(self::$_config->callback->core->ready)){
+            
+            $callbacks = self::$app->config->callback->core->ready;
+            foreach($callbacks as $handler){
+                $class = $handler->class;
+                $method= $handler->method;
+
+                $class::$method();
+            }
+
+        }
+
         self::$app->next();
     }
     
