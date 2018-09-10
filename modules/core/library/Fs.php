@@ -53,12 +53,12 @@ class Fs
         return array_values(array_diff(scandir($path), ['.', '..']));
     }
     
-    static function write(string $path, string $text): bool {
+    static function write(string $path, string $text, bool $append=false): bool {
         $fname = basename($path);
         $dname = dirname($path);
         if(!Fs::mkdir($dname))
             return false;
-        if(false === ($f = fopen($path, 'w')))
+        if(false === ($f = fopen($path, ($append?'a':'w'))))
             return false;
         fwrite($f, $text);
         return fclose($f);
