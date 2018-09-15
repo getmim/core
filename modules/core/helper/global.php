@@ -127,6 +127,8 @@ function prop_as_key(array $array, string $prop): array{
     $res = [];
     foreach($array as $arr){
         $key = is_array($arr) ? $arr[$prop] : $arr->$prop;
+        if(is_object($key))
+            $key = (string)$key;
         $res[$key] = $arr;
     }
     
