@@ -87,7 +87,9 @@ return [
         '!etc/log/error/.gitkeep' => true,
         
         'etc/temp/*' => true,
-        '!etc/temp/.gitkeep' => true
+        '!etc/temp/.gitkeep' => true,
+
+        'vendor' => true
     ],
     'autoload' => [
         'classes' => [
