@@ -330,6 +330,7 @@ class Request extends \Mim\Service
             $hand->solved = true;
             $handlers[$index] = $hand;
             $this->_props['handler'] = $handlers;
+            break;
         }
         
         if(!$handler){
@@ -339,7 +340,7 @@ class Request extends \Mim\Service
         
         $class = $handler->class;
         $method= $handler->method;
-        
+
         $hdr = new $class();
         $hdr->$method();
     }

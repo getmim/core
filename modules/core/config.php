@@ -109,6 +109,10 @@ return [
                 'type' => 'file',
                 'base' => 'modules/core/library'
             ],
+            'Mim\\Middleware' => [
+                'type' => 'file',
+                'base' => 'modules/core/system/Middleware.php'
+            ],
             'Mim\\Provider' => [
                 'type' => 'file',
                 'base' => 'modules/core/provider'
