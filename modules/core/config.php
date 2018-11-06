@@ -121,6 +121,10 @@ return [
             'Mim\\Server' => [
                 'type' => 'file',
                 'base' => 'modules/core/server'
+            ],
+            'StableSort' => [
+                'type' => 'file',
+                'base' => 'modules/core/third-party/StableSort'
             ]
         ],
         'files' => [
