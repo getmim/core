@@ -160,6 +160,7 @@ class Response extends \Mim\Service
         ob_end_flush();
         ob_flush();
         flush();
+        fastcgi_finish_request();
     }
     
     public function setCache(int $expires): void{
