@@ -11,7 +11,7 @@ class PHP
 {
     static function version(): array{
         $result = [
-            'success' => version_compare(PHP_VERSION, '7.2', '>='),
+            'success' => version_compare(PHP_VERSION, '7.3', '>='),
             'info'    => PHP_VERSION
         ];
         
