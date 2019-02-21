@@ -41,6 +41,7 @@ class Router extends \Mim\Service
     }
 
     public function exists(string $name): bool{
+        $routes = \Mim\Library\Router::$all_routes;
         return isset($routes->_gateof->$name);
     }
     

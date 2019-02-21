@@ -2,12 +2,12 @@
 /**
  * Mim Core
  * @package core
- * @version 0.0.4
+ * @version 0.0.7
  */
 
 return [
     '__name' => 'core',
-    '__version' => '0.0.6',
+    '__version' => '0.0.7',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
