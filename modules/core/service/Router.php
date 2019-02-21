@@ -11,14 +11,6 @@ class Router extends \Mim\Service
 {
     
     private $_params = [];
-    
-    public function getParam(string $name): ?string{
-        return $this->_params[$name] ?? null;
-    }
-    
-    public function setParam(string $name, string $value): void{
-        $this->_params[$name] = $value;
-    }
 
     public function asset(string $gate, string $path, int $version=0): ?string{
         $gates = \Mim\Library\Router::$all_gates;
@@ -46,6 +38,18 @@ class Router extends \Mim\Service
             $result.= '?v=' . $version;
 
         return $result;
+    }
+
+    public function exists(string $name): bool{
+        return isset($routes->_gateof->$name);
+    }
+    
+    public function getParam(string $name): ?string{
+        return $this->_params[$name] ?? null;
+    }
+    
+    public function setParam(string $name, string $value): void{
+        $this->_params[$name] = $value;
     }
     
     public function to(string $name, array $params=[], array $query=[]): ?string{
