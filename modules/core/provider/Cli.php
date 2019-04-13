@@ -10,18 +10,18 @@ namespace Mim\Provider;
 class Cli
 {
     static function dTimezone(){
-        $date = new DateTime();
-        $tzone = $date->getTimezone();
+        $date = new \DateTime();
+        $tzone = $date->getTimezone()->getName();
         if(!$tzone)
             $tzone = 'Asia/Jakarta';
         return $tzone;
     }
 
     static function dHost(){
-        $here = getcwd();
-        $base = basename($here);
-        $base = preg_replace('![^a-z0-9.]!', '-', strtolower($base))
-        $base = preg_replace('!-+!', '-', $base);
+        $here = \getcwd();
+        $base = \basename($here);
+        $base = \preg_replace('![^a-z0-9.]!', '-', \strtolower($base));
+        $base = \preg_replace('!-+!', '-', $base);
 
         return $base . '.mim';
     }
@@ -32,8 +32,8 @@ class Cli
 
     static function dName(){
         $here = getcwd();
-        $base = basename($here);
-        $base = preg_replace('![a-zA-Z0-9]!', ' ', $base);
+        $base = basename(dirname($here));
+        $base = preg_replace('![^a-zA-Z0-9]!', ' ', $base);
         $base = preg_replace('! +!', ' ', $base);
 
         return ucwords($base);
