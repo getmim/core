@@ -18,10 +18,10 @@ class Cli
     }
 
     static function dHost(){
-        $here = \getcwd();
-        $base = \basename($here);
-        $base = \preg_replace('![^a-z0-9.]!', '-', \strtolower($base));
-        $base = \preg_replace('!-+!', '-', $base);
+        $here = getcwd();
+        $base = basename(dirname($here));
+        $base = preg_replace('![^a-z0-9.]!', '-', \strtolower($base));
+        $base = preg_replace('!-+!', '-', $base);
 
         return $base . '.mim';
     }
