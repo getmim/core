@@ -7,7 +7,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '0.0.7',
+    '__version' => '0.0.8',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -31,6 +31,10 @@ return [
         [
             'name' => 'name',
             'question' => 'Application name',
+            'default' => [
+                'class' => 'Mim\\Provider\\Cli',
+                'method' => 'dName'
+            ],
             'rule' => '!^.+$!'
         ],
         [
@@ -42,12 +46,19 @@ return [
         [
             'name' => 'host',
             'question' => 'Application hostname, without scheme',
+            'default' => [
+                'class' => 'Mim\\Provider\\Cli',
+                'method' => 'dHost'
+            ],
             'rule' => '!^[a-z0-9-\.]+$!'
         ],
         [
             'name' => 'timezone',
             'question' => 'Application timezone',
-            'default' => 'Asia/Jakarta',
+            'default' => [
+                'class' => 'Mim\\Provider\\Cli',
+                'method' => 'dTimezone'
+            ],
             'rule' => '!^.+$!'
         ],
         [
@@ -143,7 +154,7 @@ return [
     ],
     'server' => [
         'core' => [
-            'PHP >= 7.2' => 'Mim\\Server\\PHP::version'
+            'PHP >= 7.3' => 'Mim\\Server\\PHP::version'
         ]
     ]
 ];

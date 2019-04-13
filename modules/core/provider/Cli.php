@@ -9,7 +9,33 @@ namespace Mim\Provider;
 
 class Cli
 {
+    static function dTimezone(){
+        $date = new DateTime();
+        $tzone = $date->getTimezone();
+        if(!$tzone)
+            $tzone = 'Asia/Jakarta';
+        return $tzone;
+    }
+
+    static function dHost(){
+        $here = getcwd();
+        $base = basename($here);
+        $base = preg_replace('![^a-z0-9.]!', '-', strtolower($base))
+        $base = preg_replace('!-+!', '-', $base);
+
+        return $base . '.mim';
+    }
+
     static function dInstall(){
         return date('Y-m-d H:i:s');
+    }
+
+    static function dName(){
+        $here = getcwd();
+        $base = basename($here);
+        $base = preg_replace('![a-zA-Z0-9]!', ' ', $base);
+        $base = preg_replace('! +!', ' ', $base);
+
+        return ucwords($base);
     }
 }
