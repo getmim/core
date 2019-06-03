@@ -38,4 +38,14 @@ class Cli
 
         return ucwords($base);
     }
+
+    static function iGitIgnore(array $config, bool $value): ?array{
+        if(!$value)
+            return null;
+
+        return [
+            'modules/*' => null,
+            '!modules/.gitkeep' => null
+        ];
+    }
 }

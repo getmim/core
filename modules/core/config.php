@@ -7,7 +7,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '0.0.8',
+    '__version' => '0.0.9',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -73,8 +73,18 @@ return [
         [
             'name' => 'secure',
             'question' => 'Use `https` scheme',
-            'default' => true,
+            'default' => false,
             'rule' => 'boolean'
+        ],
+        [
+            'name' => '__gitignore',
+            'question' => 'Would you like to keep the modules dir in repository',
+            'default' => false,
+            'rule' => 'boolean',
+            'injector' => [
+                'class' => 'Mim\\Provider\\Cli',
+                'method' => 'iGitIgnore'
+            ]
         ]
     ],
     '__gitignore' => [
