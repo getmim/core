@@ -294,6 +294,27 @@ class Request extends \Mim\Service
             'UNKNOWN';
         return $this->_props['ip'];
     }
+
+    public function getPager(int $rpp_default=12, int $rpp_max=24): array{
+        $result = [
+            'page' => (int)$this->getQuery('page', 1),
+            'rpp'  => (int)$this->getQuery('rpp', $rpp_default)
+        ];
+
+        if(!$result['page'] || $result['page'] < 1)
+            $result['page'] = 1;
+
+        if(!$result['rpp'] || $result['rpp'] < 1)
+            $result['rpp'] = $rpp_default;
+
+        if($result['rpp'] > $rpp_max)
+            $result['rpp'] = $rpp_max;
+
+        $result[0] = $result['page'];
+        $result[1] = $result['rpp'];
+
+        return $result;
+    }
     
     public function getPost(string $name=null, $def=null){
         if(is_null($name))
