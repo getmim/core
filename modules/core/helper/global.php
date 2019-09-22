@@ -79,7 +79,8 @@ function get_prop_value(object $object, string $fields){
 function group_by_prop(array $array, string $prop): array{
     $res = [];
     foreach($array as $arr){
-        $key = $arr[$prop];
+        $key = is_object($arr) ? $arr->$prop : $arr[$prop];
+        
         if(!isset($res[$key]))
             $res[$key] = [];
         $res[$key][] = $arr;
