@@ -19,11 +19,18 @@ function autoload_class_exists(string $class): bool{
 function array_flatten(array $array, string $prefix=''): array{
     $result = [];
     foreach($array as $key => $val){
+        if(!$val)
+            continue;
         $c_prefix = $prefix . $key;
         if(is_array($val) || is_object($val)){
             $val = (array)$val;
             if(is_indexed_array($val)){
-                $result[$c_prefix] = implode(', ', $val);
+                if(is_object($val[0]) || is_array($val[1])){
+                    $res = array_flatten($val, $c_prefix . '.');
+                    $result = array_merge($result, $res);
+                }else{
+                    $result[$c_prefix] = implode(', ', $val);
+                }
             }else{
                 $res = array_flatten($val, $c_prefix . '.');
                 $result = array_merge($result, $res);
@@ -143,7 +150,7 @@ function to_attr(array $attrs): string{
     foreach($attrs as $name => $val){
         $tx.= ' ' . $name;
         if(!is_null($val))
-            $tx.= '="' . $val . '"';
+            $tx.= '="' . hs($val) . '"';
     }
     return $tx;
 }
