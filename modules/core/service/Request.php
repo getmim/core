@@ -2,7 +2,7 @@
 /**
  * Request service
  * @package core
- * @version 0.0.3
+ * @version 1.0.0
  */
 
 namespace Mim\Service;
@@ -270,6 +270,20 @@ class Request extends \Mim\Service
         if(!is_object($this->_props['body']))
             return $def;
         return $this->_props['body']->$name ?? $def;
+    }
+
+    public function getCond(array $queries): array{
+        $result = [];
+        foreach($queries as $query){
+            $value = \Mim::$app->req->getQuery($query);
+            if(!$value)
+                continue;
+            if(is_array($value))
+                $value[] = '__!';
+            $result[$query] = $value;
+        }
+
+        return $result;
     }
     
     public function getCookie(string $name, string $def=null): ?string{
