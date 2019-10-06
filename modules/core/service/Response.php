@@ -61,7 +61,9 @@ class Response extends \Mim\Service
     
     public function redirect(string $url, int $code=302): void{
         if($code !== 200){
-            header('Location: ' . $url, false, $code);
+            $this->setStatus($code);
+            $this->addHeader('Location', $url);
+            $this->send();
             return;
         }
         
