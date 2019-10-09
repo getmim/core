@@ -161,8 +161,10 @@ function to_ns(string $str): string{
 
 function to_source($data, $space=0, $escape=true) {
     if(is_string($data)){
-        if($escape)
+        if($escape){
             $data = addslashes($data);
+            $data = str_replace('\\"', '"', $data);
+        }
         return "'" . $data . "'";
     }
     if(is_numeric($data))
