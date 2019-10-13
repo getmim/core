@@ -80,7 +80,7 @@ class Router extends \Mim\Service
         $used_params = array_replace($this->_params, $params);
 
         foreach($used_params as $pk => $pv)
-            $result = str_replace('(:' . $pk . ')', $pv, $result);
+            $result = str_replace('(:' . $pk . ')', urlencode($pv), $result);
 
         if($query)
             $result.= '?' . http_build_query($query);
