@@ -2,7 +2,7 @@
 /**
  * Global functions
  * @package core
- * @version 0.0.2
+ * @version 1.1.0
  */
 
 function alt(...$args){
@@ -157,6 +157,18 @@ function to_attr(array $attrs): string{
 
 function to_ns(string $str): string{
     return str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $str)));
+}
+
+function to_route($opt): string{
+    if(is_string($opt))
+        $opt = [$opt];
+
+    if(!isset($opt[1]))
+        $opt[1] = [];
+    if(!isset($opt[2]))
+        $opt[2] = [];
+
+    return \Mim::$app->router->to($opt[0], $opt[1], $opt[2]);
 }
 
 function to_source($data, $space=0, $escape=true) {
