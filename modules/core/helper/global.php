@@ -168,7 +168,7 @@ function to_route($opt): string{
     if(!isset($opt[2]))
         $opt[2] = [];
 
-    return \Mim::$app->router->to($opt[0], $opt[1], $opt[2]);
+    return \Mim::$app->router->to($opt[0], (array)$opt[1], (array)$opt[2]);
 }
 
 function to_source($data, $space=0, $escape=true) {
