@@ -1,13 +1,8 @@
 <?php
-/**
- * Mim Core
- * @package core
- * @version 1.1.0
- */
 
 return [
     '__name' => 'core',
-    '__version' => '1.1.2',
+    '__version' => '1.2.0',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -16,12 +11,12 @@ return [
         'website' => 'https://iqbalfn.com/'
     ],
     '__files' => [
-        'index.php' => ['install', 'update', 'remove'],
+        'index.php' => ['install','update','remove'],
         '.gitignore' => ['remove'],
         'modules/.gitkeep' => ['remove'],
-        'app' => ['install', 'remove'],
-        'etc' => ['install', 'remove'],
-        'modules/core' => ['install', 'update', 'remove']
+        'app' => ['install','remove'],
+        'etc' => ['install','remove'],
+        'modules/core' => ['install','update','remove']
     ],
     '__dependencies' => [
         'required' => [],
@@ -41,7 +36,7 @@ return [
             'name' => 'version',
             'question' => 'Application version',
             'default' => '0.0.1',
-            'rule' => '!^[0-9]+\.[0-9]+\.[0-9]+$!'
+            'rule' => '!^[0-9]+\\.[0-9]+\\.[0-9]+$!'
         ],
         [
             'name' => 'host',
@@ -50,7 +45,7 @@ return [
                 'class' => 'Mim\\Provider\\Cli',
                 'method' => 'dHost'
             ],
-            'rule' => '!^[a-z0-9-\.]+$!'
+            'rule' => '!^[a-z0-9-\\.]+$!'
         ],
         [
             'name' => 'timezone',
@@ -73,13 +68,13 @@ return [
         [
             'name' => 'secure',
             'question' => 'Use `https` scheme',
-            'default' => false,
+            'default' => FALSE,
             'rule' => 'boolean'
         ],
         [
             'name' => '__gitignore',
             'question' => 'Would you like to keep the modules dir in repository',
-            'default' => false,
+            'default' => FALSE,
             'rule' => 'boolean',
             'injector' => [
                 'class' => 'Mim\\Provider\\Cli',
@@ -88,29 +83,22 @@ return [
         ]
     ],
     '__gitignore' => [
-        'modules/*' => true,
-        '!modules/.gitkeep' => true,
-        
-        'etc/cache/*' => true,
-        '!etc/cache/.gitkeep' => true,
-        
-        'etc/cert/*' => true,
-        '!etc/cert/.gitkeep' => true,
-        
-        'etc/config/development.php' => true,
-        'etc/config/production.php' => true,
-        'etc/config/test.php' => true,
-        
-        'etc/log/access/*' => true,
-        '!etc/log/access/.gitkeep' => true,
-        
-        'etc/log/error/*' => true,
-        '!etc/log/error/.gitkeep' => true,
-        
-        'etc/temp/*' => true,
-        '!etc/temp/.gitkeep' => true,
-
-        'vendor' => true
+        'modules/*' => TRUE,
+        '!modules/.gitkeep' => TRUE,
+        'etc/cache/*' => TRUE,
+        '!etc/cache/.gitkeep' => TRUE,
+        'etc/cert/*' => TRUE,
+        '!etc/cert/.gitkeep' => TRUE,
+        'etc/config/development.php' => TRUE,
+        'etc/config/production.php' => TRUE,
+        'etc/config/test.php' => TRUE,
+        'etc/log/access/*' => TRUE,
+        '!etc/log/access/.gitkeep' => TRUE,
+        'etc/log/error/*' => TRUE,
+        '!etc/log/error/.gitkeep' => TRUE,
+        'etc/temp/*' => TRUE,
+        '!etc/temp/.gitkeep' => TRUE,
+        'vendor' => TRUE
     ],
     'autoload' => [
         'classes' => [
@@ -150,10 +138,14 @@ return [
             'StableSort' => [
                 'type' => 'file',
                 'base' => 'modules/core/third-party/StableSort'
+            ],
+            'Core\\Library' => [
+                'type' => 'file',
+                'base' => 'modules/core/library'
             ]
         ],
         'files' => [
-            'modules/core/helper/global.php' => true
+            'modules/core/helper/global.php' => TRUE
         ]
     ],
     'service' => [
@@ -165,6 +157,13 @@ return [
     'server' => [
         'core' => [
             'PHP >= 7.3' => 'Mim\\Server\\PHP::version'
+        ]
+    ],
+    'callback' => [
+        'app' => [
+            'reconfig' => [
+                'Core\\Library\\Config::reconfig' => true
+            ]
         ]
     ]
 ];
