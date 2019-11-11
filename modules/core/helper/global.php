@@ -19,8 +19,6 @@ function autoload_class_exists(string $class): bool{
 function array_flatten(array $array, string $prefix=''): array{
     $result = [];
     foreach($array as $key => $val){
-        if(!$val)
-            continue;
         $c_prefix = $prefix . $key;
         if(is_array($val) || is_object($val)){
             $val = (array)$val;
@@ -39,7 +37,7 @@ function array_flatten(array $array, string $prefix=''): array{
             $result[$c_prefix] = $val;
         }
     }
-
+    
     return $result;
 }
 
