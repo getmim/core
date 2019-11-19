@@ -23,7 +23,9 @@ function array_flatten(array $array, string $prefix=''): array{
         if(is_array($val) || is_object($val)){
             $val = (array)$val;
             if(is_indexed_array($val)){
-                if(is_object($val[0]) || is_array($val[0])){
+                if(!$val){
+                    $result[$c_prefix] = '';
+                }elseif(is_object($val[0]) || is_array($val[0])){
                     $res = array_flatten($val, $c_prefix . '.');
                     $result = array_merge($result, $res);
                 }else{
