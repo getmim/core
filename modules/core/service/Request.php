@@ -276,7 +276,7 @@ class Request extends \Mim\Service
         $result = [];
         foreach($queries as $query){
             $value = \Mim::$app->req->getQuery($query);
-            if(is_null($value))
+            if(is_null($value) && $value === '')
                 continue;
             if(is_array($value))
                 $value[] = '__!';
