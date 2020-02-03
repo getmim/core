@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '1.2.2',
+    '__version' => '1.3.0',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [

@@ -43,6 +43,15 @@ function array_flatten(array $array, string $prefix=''): array{
     return $result;
 }
 
+function toarray($arr){
+    if(is_array($arr))
+        return $arr;
+    $arr = (array)$arr;
+    foreach($arr as $key => $val)
+        $arr[$key] = toarray($val);
+    return $arr;
+}
+
 function deb(...$args): void{
     $is_cli = php_sapi_name() === 'cli';
     ob_start();
