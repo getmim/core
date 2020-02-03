@@ -43,12 +43,12 @@ function array_flatten(array $array, string $prefix=''): array{
     return $result;
 }
 
-function toarray($arr){
-    if(is_array($arr))
+function arrayfy($arr){
+    if(!is_object($arr))
         return $arr;
     $arr = (array)$arr;
     foreach($arr as $key => $val)
-        $arr[$key] = toarray($val);
+        $arr[$key] = arrayfy($val);
     return $arr;
 }
 
