@@ -168,7 +168,7 @@ function to_ns(string $str): string{
     return str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $str)));
 }
 
-function to_route($opt): string{
+function to_route($opt, object $obj=null): string{
     if(is_string($opt))
         $opt = [$opt];
 
@@ -176,6 +176,13 @@ function to_route($opt): string{
         $opt[1] = [];
     if(!isset($opt[2]))
         $opt[2] = [];
+
+    if($obj){
+        foreach($opt[1] as $okey => $oval){
+            if(substr($oval,0,1) === '$')
+                $opt[1][$okey] = get_prop_value($obj, substr($oval,1));
+        }
+    }
 
     return \Mim::$app->router->to($opt[0], (array)$opt[1], (array)$opt[2]);
 }
