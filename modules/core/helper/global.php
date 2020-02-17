@@ -44,7 +44,7 @@ function array_flatten(array $array, string $prefix=''): array{
 }
 
 function arrayfy($arr){
-    if(!is_object($arr))
+    if(!is_object($arr) && !is_array($arr))
         return $arr;
     $arr = (array)$arr;
     foreach($arr as $key => $val)
