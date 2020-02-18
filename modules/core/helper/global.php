@@ -96,6 +96,9 @@ function group_by_prop(array $array, string $prop): array{
     $res = [];
     foreach($array as $arr){
         $key = is_object($arr) ? $arr->$prop : $arr[$prop];
+
+        if(is_object($key))
+            $key = $key->__toString();
         
         if(!isset($res[$key]))
             $res[$key] = [];
