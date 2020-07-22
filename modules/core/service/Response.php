@@ -154,7 +154,7 @@ class Response extends \Mim\Service
         $s_domain = '.' . \Mim::$app->config->host;
         foreach($this->_cookies as $name => $cookie){
             $copts = [
-                'expires'  => $cookie->expires + time(),
+                'expires'  => $cookie->expires ? ( $cookie->expires + time() ) : 0,
                 'path'     => '/',
                 'domain'   => $s_domain,
                 'secure'   => $s_cookie,
