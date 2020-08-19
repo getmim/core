@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '1.5.0',
+    '__version' => '1.5.1',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -70,6 +70,11 @@ return [
             'question' => 'Use `https` scheme',
             'default' => FALSE,
             'rule' => 'boolean'
+        ],
+        [
+            'name' => 'shared',
+            'question' => 'Shared module dir',
+            'default' => ''
         ],
         [
             'name' => '__gitignore',
