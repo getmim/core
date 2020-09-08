@@ -41,7 +41,7 @@ class Router
             if(!preg_match($filter->_value, $target, $match))
                 return null;
             foreach($filter->params as $par => $type){
-                $result['params'][$par] = $match[$par];
+                $result['params'][$par] = $match[$par] ?? '';
                 if($type === 'rest')
                     $result['params'][$par] = explode($sep, $result['params'][$par]);
             }
