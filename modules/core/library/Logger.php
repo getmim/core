@@ -37,10 +37,13 @@ class Logger {
         $path = BASEPATH . '/etc/log/error/' . date('/Y/m/d/h/') . uniqid() . '.txt';
         Fs::write($path, $tx);
 
-        if(\Mim::$app && is_object(\Mim::$app->req) && \Mim::$app->req->gate){
+        if(\Mim::$app && isset(\Mim::$app->req) && is_object(\Mim::$app->req) && \Mim::$app->req->gate){
             $handler = \Mim::$app->req->gate->errors->{'500'}->_handlers;
             \Mim::$app->req->setProp('handler', $handler);
             \Mim::$app->next();
+        }else{
+            echo '<pre>';
+            echo $tx;
         }
 
         exit;
