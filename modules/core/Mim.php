@@ -36,6 +36,7 @@ class Mim {
         self::_env();
         self::$_config = require_once BASEPATH . '/etc/cache/config.php';
         self::_autoload();
+        self::_env_config();
         self::_timezone();
         self::_error();
         self::$app = new Mim;
@@ -86,6 +87,34 @@ class Mim {
             ini_set('display_errors', 1);
         else
             ini_set('display_errors', 0);
+    }
+
+    private static function _env_config(): void{
+        if(!isset(self::$_config->envMap))
+            return;
+        $env_map = self::$_config->envMap;
+        
+        foreach($env_map as $key => $map){
+            $val = getenv($key);
+            if(!$val)
+                continue;
+
+            $maps  = explode('.', $map);
+            $ptemp = &self::$_config;
+            foreach($maps as $mp){
+                if(is_array($ptemp)){
+                    if(!isset($ptemp[$mp]))
+                        $ptemp[$mp] = (object)[];
+                    $ptemp = &$ptemp[$mp];
+                }elseif(is_object($ptemp)){
+                    if(!isset($ptemp->$mp))
+                        $ptemp->$mp = (object)[];
+                    $ptemp = &$ptemp->$mp;
+                }
+            }
+            $ptemp = $val;
+            unset($ptemp);
+        }
     }
     
     private static function _error(){
