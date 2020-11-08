@@ -79,8 +79,13 @@ class Router extends \Mim\Service
 
         $used_params = array_replace($this->_params, $params);
 
-        foreach($used_params as $pk => $pv)
-            $result = str_replace('(:' . $pk . ')', urlencode($pv), $result);
+        foreach($used_params as $pk => $pv){
+            if(is_array($pv))
+                $pv = implode('/', array_map('urlencode', $pv));
+            else
+                $pv = urlencode($pv);
+            $result = str_replace('(:' . $pk . ')', $pv, $result);
+        }
 
         if($query)
             $result.= '?' . http_build_query($query);
