@@ -2,7 +2,7 @@
 /**
  * Global functions
  * @package core
- * @version 1.1.0
+ * @version 1.7.0
  */
 
 function alt(...$args){
@@ -39,7 +39,7 @@ function array_flatten(array $array, string $prefix=''): array{
             $result[$c_prefix] = $val;
         }
     }
-    
+
     return $result;
 }
 
@@ -55,7 +55,7 @@ function arrayfy($arr){
 function deb(...$args): void{
     $is_cli = php_sapi_name() === 'cli';
     ob_start();
-    
+
     if(!$is_cli)
         echo '<pre>';
     foreach($args as $arg){
@@ -73,10 +73,10 @@ function deb(...$args): void{
     }
     if(!$is_cli)
         echo '</pre>';
-    
+
     $ctx = ob_get_contents();
     ob_end_clean();
-    
+
     echo $ctx;
     exit;
 }
@@ -99,12 +99,12 @@ function group_by_prop(array $array, string $prop): array{
 
         if(is_object($key))
             $key = $key->__toString();
-        
+
         if(!isset($res[$key]))
             $res[$key] = [];
         $res[$key][] = $arr;
     }
-    
+
     return $res;
 }
 
@@ -151,8 +151,25 @@ function prop_as_key(array $array, string $prop): array{
             $key = (string)$key;
         $res[$key] = $arr;
     }
-    
+
     return $res;
+}
+
+function put_service_value(array $map): array
+{
+    foreach($map as $key => $value) {
+        if(is_object($value) || is_array($value)){
+            $value = put_service_value((array)$value);
+
+        }elseif(is_string($value)){
+            if(substr($value,0,1) === '$')
+                $value = get_prop_value(\Mim::$app, substr($value,1));
+        }
+
+        $map[$key] = $value;
+    }
+
+    return $map;
 }
 
 function to_attr(array $attrs): string{
@@ -208,15 +225,15 @@ function to_source($data, $space=0, $escape=true) {
         return "'*RESOURCE*'";
     $is_array  = is_array($data);
     $is_object = is_object($data);
-    
+
     if(!$is_object && !$is_array)
         return "'UNKNOW_DATA_TYPE'";
-    
+
     $inner_space = $space + 4;
     $nl = PHP_EOL;
-    
+
     $tx = $is_array ? '[' : '(object)[';
-    
+
     if($is_array && is_indexed_array($data)){
         if(count($data) && (is_array($data[0]) || is_object($data[0]))){
             foreach($data as $ind => $val){
@@ -245,6 +262,6 @@ function to_source($data, $space=0, $escape=true) {
         }
     }
     $tx.= ']';
-    
+
     return $tx;
 }
