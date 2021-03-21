@@ -2,7 +2,7 @@
 /**
  * Global functions
  * @package core
- * @version 1.7.0
+ * @version 1.8.0
  */
 
 function alt(...$args){
@@ -205,6 +205,15 @@ function to_route($opt, object $obj=null): string{
     }
 
     return \Mim::$app->router->to($opt[0], (array)$opt[1], (array)$opt[2]);
+}
+
+function to_slug(string $str): string
+{
+    $str = strtolower($str);
+    $str = preg_replace('![^a-z0-9]!', '-', $str);
+    $str = preg_replace('!-+!', '-', $str);
+
+    return $str;
 }
 
 function to_source($data, $space=0, $escape=true) {
