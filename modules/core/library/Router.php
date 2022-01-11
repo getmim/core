@@ -72,7 +72,15 @@ class Router
             
             if($is_cli !== ($gate->host->value === 'CLI'))
                 continue;
-            
+
+            if ($gate->host->value === '*') {
+                $gate->host->value = $_SERVER['HTTP_HOST'];
+            }
+
+            if ($gate->asset->host === '*') {
+                $gate->asset->host = $_SERVER['HTTP_HOST'];
+            }
+
             $sep = $is_cli ? ' ' : '.';
             if(!$is_cli && null === ($m_host = self::_matchFilter($gate->host, $r_host, $sep)))
                 continue;

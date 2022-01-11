@@ -35,6 +35,7 @@ class Mim {
     static function init(): void {
         self::_env();
         self::$_config = require_once BASEPATH . '/etc/cache/config.php';
+        self::_dynamicHost();
         self::_autoload();
         self::_env_config();
         self::_timezone();
@@ -74,6 +75,23 @@ class Mim {
         $composer_autoload = BASEPATH . '/vendor/autoload.php';
         if(is_file($composer_autoload))
             include $composer_autoload;
+    }
+
+    private static function _dynamicHost(): void
+    {
+        if (self::$_config->host == '*' && isset($_SERVER['HTTP_HOST'])) {
+            self::$_config->host = $_SERVER['HTTP_HOST'];
+        }
+
+        foreach (self::$_config->gates as $gate => &$info) {
+            if ($info->host->value === '*') {
+                $info->host->value = 'HOST';
+            }
+            if ($info->asset->host === '*') {
+                $info->asset->host = 'HOST';
+            }
+        }
+        unset($info);
     }
     
     private static function _env(): void {
