@@ -2,7 +2,7 @@
 /**
  * Response service
  * @package core
- * @version 0.0.1
+ * @version 1.8.0
  */
 
 namespace Mim\Service;
@@ -171,7 +171,9 @@ class Response extends \Mim\Service
         ob_end_flush();
         ob_flush();
         flush();
-        fastcgi_finish_request();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
     }
     
     public function setCache(int $expires): void{
