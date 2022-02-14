@@ -2,7 +2,7 @@
 /**
  * Application manager
  * @package core
- * @version 0.0.1
+ * @version 1.8.1
  */
 
 class Mim {
@@ -32,7 +32,10 @@ class Mim {
     
     /* static area */
     
-    static function init(): void {
+    static function init(): bool {
+        if (self::_selfServer())
+            return false;
+
         self::_env();
         self::$_config = require_once BASEPATH . '/etc/cache/config.php';
         self::_dynamicHost();
@@ -57,6 +60,8 @@ class Mim {
         }
 
         self::$app->next();
+
+        return true;
     }
     
     private static function _autoload(): void {
@@ -81,6 +86,10 @@ class Mim {
     {
         if (self::$_config->host == '*' && isset($_SERVER['HTTP_HOST'])) {
             self::$_config->host = $_SERVER['HTTP_HOST'];
+        }
+
+        if (!isset(self::$_config->gates)) {
+            return;
         }
 
         foreach (self::$_config->gates as $gate => &$info) {
@@ -144,5 +153,41 @@ class Mim {
     
     private static function _timezone(): void{
         date_default_timezone_set(self::$_config->timezone);
+    }
+
+    private static function _selfServer()
+    {
+        if (php_sapi_name() !== 'cli-server') {
+            return false;
+        }
+
+        $uri = ltrim($_SERVER['REQUEST_URI'], '/');
+        $file_abs = BASEPATH . '/' . $uri;
+
+        // rules to back to index.php:
+        // - target not found
+        // - target is dir
+        // - target file start with .
+        // - target file is php or phtml
+
+        if (!file_exists($file_abs)){
+            return false;
+        }
+
+        if (is_dir($file_abs))
+            return false;
+
+        $file_name = basename($file_abs);
+        if (substr($file_name, 0, 1) == '.')
+            return false;
+
+        $file_ext = explode('.', $file_name);
+        $file_ext = end($file_ext);
+        $php_exts = ['php', 'phtml'];
+
+        if (in_array($file_ext, $php_exts))
+            return false;
+
+        return true;
     }
 }
