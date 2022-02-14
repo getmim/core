@@ -2,7 +2,7 @@
 /**
  * Response service
  * @package core
- * @version 1.8.0
+ * @version 1.8.2
  */
 
 namespace Mim\Service;
@@ -152,6 +152,7 @@ class Response extends \Mim\Service
         // set cookies
         $s_cookie = \Mim::$app->config->secure;
         $s_domain = '.' . \Mim::$app->config->host;
+        $s_domain = preg_replace('!:[0-9]+$!', '', $s_domain);
         foreach($this->_cookies as $name => $cookie){
             $copts = [
                 'expires'  => $cookie->expires ? ( $cookie->expires + time() ) : 0,

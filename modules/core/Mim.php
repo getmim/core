@@ -2,7 +2,7 @@
 /**
  * Application manager
  * @package core
- * @version 1.8.1
+ * @version 1.8.2
  */
 
 class Mim {
@@ -163,6 +163,7 @@ class Mim {
 
         $uri = ltrim($_SERVER['REQUEST_URI'], '/');
         $file_abs = BASEPATH . '/' . $uri;
+        $file_abs = preg_replace('!\?.+$!', '', $file_abs);
 
         // rules to back to index.php:
         // - target not found
