@@ -2,7 +2,7 @@
 /**
  * Request service
  * @package core
- * @version 1.0.0
+ * @version 1.8.3
  */
 
 namespace Mim\Service;
@@ -57,7 +57,7 @@ class Request extends \Mim\Service
             'route'     => null,
             'scheme'    => $this->getServer('REQUEST_SCHEME'),
             'type'      => $this->getServer('CONTENT_TYPE'),
-            'url'       => $this->getServer('REQUEST_SCHEME')
+            'url'       => $this->getServer('REQUEST_SCHEME', 'http')
                 . '://' 
                 . $this->getServer('HTTP_HOST')
                 . $this->getServer('REQUEST_URI')
