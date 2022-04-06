@@ -35,7 +35,7 @@ class Logger {
         $tx.= str_repeat('-', 80) . $nl;
         
         $path = BASEPATH . '/etc/log/error/' . date('/Y/m/d/h/') . uniqid() . '.txt';
-        Fs::write($path, $tx);
+        \Mim\Library\Fs::write($path, $tx);
 
         if(\Mim::$app && is_object((\Mim::$app->req??null)) && \Mim::$app->req->gate){
             $handler = \Mim::$app->req->gate->errors->{'500'}->_handlers;
