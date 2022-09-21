@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '1.8.4',
+    '__version' => '1.8.5',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -71,15 +71,15 @@ return [
             'default' => FALSE,
             'rule' => 'boolean'
         ],
-        [
-            'name' => 'shared',
-            'question' => 'Shared module dir',
-            'default' => ''
-        ],
+        // [
+        //     'name' => 'shared',
+        //     'question' => 'Shared module dir',
+        //     'default' => ''
+        // ],
         [
             'name' => '__gitignore',
             'question' => 'Would you like to keep the modules dir in repository',
-            'default' => FALSE,
+            'default' => TRUE,
             'rule' => 'boolean',
             'injector' => [
                 'class' => 'Mim\\Provider\\Cli',
