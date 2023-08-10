@@ -53,42 +53,48 @@ class Router extends \Mim\Service
         $this->_params[$name] = $value;
     }
     
-    public function to(string $name, array $params=[], array $query=[]): ?string{
+    public function to(string $name, array $params=[], array $query=[]): ?string
+    {
         $gates  = \Mim\Library\Router::$all_gates;
         $routes = \Mim\Library\Router::$all_routes;
         $gate   = $routes->_gateof->$name ?? null;
         $route  = $routes->$gate->$name ?? null;
 
-        if(!$gate)
+        if (!$gate) {
             trigger_error('Router named `' . $name . '` not found');
+        }
 
         $used_gate = null;
-        foreach($gates as $gt){
-            if($gt->name != $gate)
+        foreach ($gates as $gt) {
+            if ($gt->name != $gate) {
                 continue;
+            }
             $used_gate = $gt;
             break;
         }
 
-        if($used_gate->host->value === 'CLI')
+        if($used_gate->host->value === 'CLI') {
             $result = $route->path->value;
-        else{
+        } else {
             $scheme = $this->config->secure ? 'https://' : 'http://';
             $result = $scheme . $used_gate->host->value . $route->path->value;
         }
 
         $used_params = array_replace($this->_params, $params);
 
-        foreach($used_params as $pk => $pv){
-            if(is_array($pv))
+        foreach ($used_params as $pk => $pv) {
+            if(is_array($pv)) {
                 $pv = implode('/', array_map('urlencode', $pv));
-            else
+            } elseif (is_string($pv)) {
                 $pv = urlencode($pv);
-            $result = str_replace('(:' . $pk . ')', $pv, $result);
+            }
+            $result = str_replace('(:' . $pk . ')', (string)$pv, $result);
         }
 
-        if($query)
+        if ($query) {
             $result.= '?' . http_build_query($query);
+        }
+
         return $result;
     }
 }
