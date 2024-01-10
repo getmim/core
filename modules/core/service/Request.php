@@ -65,7 +65,7 @@ class Request extends \Mim\Service
         
         // content type
         $type = $this->getServer('CONTENT_TYPE', '');
-        if($custom_type = $this->getQuery('__CONTENT_TYPE__'))
+        if($custom_type = $this->getQuery('__CONTENT_TYPE__', ''))
             $type = $custom_type;
         if(strstr($type, ';'))
             $type = explode(';', $type)[0];
