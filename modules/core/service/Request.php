@@ -115,13 +115,13 @@ class Request extends \Mim\Service
             return $this->_props['accept'];
         
         // accept encoding
-        $a_e = array_map('trim', explode(',', $this->getServer('HTTP_ACCEPT_ENCODING')));
+        $a_e = array_map('trim', explode(',', $this->getServer('HTTP_ACCEPT_ENCODING', '')));
         
         // accept language
-        $a_l = array_map('trim', explode(',', $this->getServer('HTTP_ACCEPT_LANGUAGE')));
+        $a_l = array_map('trim', explode(',', $this->getServer('HTTP_ACCEPT_LANGUAGE', '')));
         
         // accept type
-        $a_t = explode(',', $this->getServer('HTTP_ACCEPT'));
+        $a_t = explode(',', $this->getServer('HTTP_ACCEPT', ''));
         foreach($a_t as &$at){
             $at = explode(';', trim($at))[0];
             if(strstr($at, '/'))
