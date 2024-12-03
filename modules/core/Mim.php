@@ -116,15 +116,27 @@ class Mim {
             ini_set('display_errors', 0);
     }
 
-    private static function _env_config(): void{
-        if(!isset(self::$_config->envMap))
+    private static function _env_config(): void
+    {
+        if (!isset(self::$_config->envMap)) {
             return;
+        }
         $env_map = self::$_config->envMap;
+
+        $env_file = BASEPATH . '/.env';
+        $env_content = [];
+        if (is_file($env_file)) {
+            $env_content = parse_ini_file($env_file);
+        }
         
-        foreach($env_map as $key => $map){
+        foreach ($env_map as $key => $map) {
             $val = getenv($key);
-            if(!$val)
+            if (!$val) {
+                $val = $env_content[$key];
+            }
+            if (!$val) {
                 continue;
+            }
 
             $maps  = explode('.', $map);
             $ptemp = &self::$_config;
