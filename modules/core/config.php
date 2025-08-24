@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'core',
-    '__version' => '1.9.0',
+    '__version' => '1.10.0',
     '__git' => 'git@github.com:getphun/core.git',
     '__license' => 'MIT',
     '__author' => [
@@ -68,7 +68,7 @@ return [
         [
             'name' => 'secure',
             'question' => 'Use `https` scheme',
-            'default' => FALSE,
+            'default' => false,
             'rule' => 'boolean'
         ],
         // [
@@ -79,7 +79,7 @@ return [
         [
             'name' => '__gitignore',
             'question' => 'Would you like to keep the modules dir in repository',
-            'default' => TRUE,
+            'default' => true,
             'rule' => 'boolean',
             'injector' => [
                 'class' => 'Mim\\Provider\\Cli',
@@ -88,22 +88,22 @@ return [
         ]
     ],
     '__gitignore' => [
-        'modules/*' => TRUE,
-        '!modules/.gitkeep' => TRUE,
-        'etc/cache/*' => TRUE,
-        '!etc/cache/.gitkeep' => TRUE,
-        'etc/cert/*' => TRUE,
-        '!etc/cert/.gitkeep' => TRUE,
-        'etc/config/development.php' => TRUE,
-        'etc/config/production.php' => TRUE,
-        'etc/config/test.php' => TRUE,
-        'etc/log/access/*' => TRUE,
-        '!etc/log/access/.gitkeep' => TRUE,
-        'etc/log/error/*' => TRUE,
-        '!etc/log/error/.gitkeep' => TRUE,
-        'etc/temp/*' => TRUE,
-        '!etc/temp/.gitkeep' => TRUE,
-        'vendor' => TRUE
+        'modules/*' => true,
+        '!modules/.gitkeep' => true,
+        'etc/cache/*' => true,
+        '!etc/cache/.gitkeep' => true,
+        'etc/cert/*' => true,
+        '!etc/cert/.gitkeep' => true,
+        'etc/config/development.php' => true,
+        'etc/config/production.php' => true,
+        'etc/config/test.php' => true,
+        'etc/log/access/*' => true,
+        '!etc/log/access/.gitkeep' => true,
+        'etc/log/error/*' => true,
+        '!etc/log/error/.gitkeep' => true,
+        'etc/temp/*' => true,
+        '!etc/temp/.gitkeep' => true,
+        'vendor' => true
     ],
     'autoload' => [
         'classes' => [
@@ -150,7 +150,7 @@ return [
             ]
         ],
         'files' => [
-            'modules/core/helper/global.php' => TRUE
+            'modules/core/helper/global.php' => true
         ]
     ],
     'service' => [

@@ -2,20 +2,29 @@
 /**
  * Application logger
  * @package core
- * @version 0.0.1
+ * @version 1.10.0
  */
 
 namespace Mim\Library;
 
-class Logger {
+class Logger
+{
 
-    static $last_error;
+    public static $last_error;
 
-    static function access($output){
-        
+    public static function access()
+    {
+        $config = \Mim::$app->config;
+        if (!$config->log || !$config->log->access) {
+            return;
+        }
+
+        $handler = $config->log->access;
+        $handler::addLog();
     }
     
-    static function error($no, $text, $file, $line, $trances=[]): void {
+    public static function error($no, $text, $file, $line, $trances = []): void
+    {
         self::$last_error = (object)[
             'file' => $file,
             'no'   => $no,
@@ -23,8 +32,9 @@ class Logger {
             'text' => $text
         ];
 
-        if(!$trances)
+        if (!$trances) {
             $trances = debug_backtrace();
+        }
         self::$last_error->trace = $trances;
 
         $nl = PHP_EOL;
@@ -37,11 +47,11 @@ class Logger {
         $path = BASEPATH . '/etc/log/error/' . date('/Y/m/d/h/') . uniqid() . '.txt';
         \Mim\Library\Fs::write($path, $tx);
 
-        if(\Mim::$app && is_object((\Mim::$app->req??null)) && \Mim::$app->req->gate){
+        if (\Mim::$app && is_object((\Mim::$app->req??null)) && \Mim::$app->req->gate) {
             $handler = \Mim::$app->req->gate->errors->{'500'}->_handlers;
             \Mim::$app->req->setProp('handler', $handler);
             \Mim::$app->next();
-        }else{
+        } else {
             echo '<pre>';
             echo $tx;
         }
@@ -49,7 +59,8 @@ class Logger {
         exit;
     }
 
-    static function exceptioned($e){
+    public static function exceptioned($e)
+    {
         self::error(
             $e->getCode(),
             $e->getMessage(),

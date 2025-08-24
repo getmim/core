@@ -1,62 +1,67 @@
 <?php
+
 /**
  * Application manager
  * @package core
- * @version 1.8.2
+ * @version 1.10.0
  */
 
-class Mim {
-
-    static $app;
-    static $_config;
-    static $_service;
+class Mim
+{
+    public static $app;
+    public static $_config;
+    public static $_service;
     
     /* object area */
-    public function __construct(){
+    public function __construct()
+    {
         self::$_service = [];
     }
     
-    public function __get(string $name): object{
-        if(isset(self::$_service[$name]))
+    public function __get(string $name): object
+    {
+        if (isset(self::$_service[$name])) {
             return self::$_service[$name];
+        }
             
         $services = self::$_config->service;
-        if(!property_exists($services, $name))
+        if (!property_exists($services, $name)) {
             trigger_error('Service named `' . $name . '` not registered');
+        }
         return self::$_service[$name] = new $services->$name;
     }
     
-    public function next(): void {
+    public function next(): void
+    {
         Mim::$app->req->next();
     }
     
     /* static area */
     
-    static function init(): bool {
-        if (self::_selfServer())
+    public static function init(): bool
+    {
+        if (self::_selfServer()) {
             return false;
+        }
 
         self::_env();
         self::$_config = require_once BASEPATH . '/etc/cache/config.php';
         self::_dynamicHost();
         self::_autoload();
-        self::_env_config();
+        self::_envConfig();
         self::_timezone();
         self::_error();
         self::$app = new Mim;
 
         // call the `core->ready` callback
-        if(isset(self::$_config->callback)
-            && isset(self::$_config->callback->core->ready)){
-            
+        if (isset(self::$_config->callback) && isset(self::$_config->callback->core->ready)) {
             $callbacks = self::$app->config->callback->core->ready;
-            foreach($callbacks as $handler){
+            foreach ($callbacks as $handler) {
                 $class = $handler->class;
                 $method= $handler->method;
 
                 $class::$method();
             }
-
         }
 
         self::$app->next();
@@ -64,22 +69,26 @@ class Mim {
         return true;
     }
     
-    private static function _autoload(): void {
+    private static function _autoload(): void
+    {
         // load all files
-        foreach(self::$_config->autoload->files as $file => $cond)
+        foreach (self::$_config->autoload->files as $file => $cond) {
             $cond && require_once BASEPATH . '/' . $file;
+        }
         
         // load required classes
-        spl_autoload_register(function($class){
+        spl_autoload_register(function ($class) {
             $file = Mim::$_config->autoload->classes->$class ?? null;
-            if($file)
+            if ($file) {
                 include BASEPATH . '/' . $file;
+            }
         });
 
         // load commposer autoload
         $composer_autoload = BASEPATH . '/vendor/autoload.php';
-        if(is_file($composer_autoload))
+        if (is_file($composer_autoload)) {
             include $composer_autoload;
+        }
     }
 
     private static function _dynamicHost(): void
@@ -103,20 +112,22 @@ class Mim {
         unset($info);
     }
     
-    private static function _env(): void {
+    private static function _env(): void
+    {
         $env = file_get_contents(BASEPATH . '/etc/.env');
         $env = $env;
         
         define('ENVIRONMENT', $env);
         
         error_reporting(-1);
-        if($env == 'development')
+        if ($env == 'development') {
             ini_set('display_errors', 1);
-        else
+        } else {
             ini_set('display_errors', 0);
+        }
     }
 
-    private static function _env_config(): void
+    private static function _envConfig(): void
     {
         if (!isset(self::$_config->envMap)) {
             return;
@@ -140,14 +151,16 @@ class Mim {
 
             $maps  = explode('.', $map);
             $ptemp = &self::$_config;
-            foreach($maps as $mp){
-                if(is_array($ptemp)){
-                    if(!isset($ptemp[$mp]))
+            foreach ($maps as $mp) {
+                if (is_array($ptemp)) {
+                    if (!isset($ptemp[$mp])) {
                         $ptemp[$mp] = (object)[];
+                    }
                     $ptemp = &$ptemp[$mp];
-                }elseif(is_object($ptemp)){
-                    if(!isset($ptemp->$mp))
+                } elseif (is_object($ptemp)) {
+                    if (!isset($ptemp->$mp)) {
                         $ptemp->$mp = (object)[];
+                    }
                     $ptemp = &$ptemp->$mp;
                 }
             }
@@ -156,14 +169,17 @@ class Mim {
         }
     }
     
-    private static function _error(){
-        set_error_handler(function($no, $text, $file, $line){
+    private static function _error()
+    {
+        set_error_handler(function ($no, $text, $file, $line) {
             \Mim\Library\Logger::error($no, $text, $file, $line);
         });
         set_exception_handler(['Mim\Library\Logger', 'exceptioned']);
+        register_shutdown_function(['Mim\Library\Logger', 'access']);
     }
     
-    private static function _timezone(): void{
+    private static function _timezone(): void
+    {
         date_default_timezone_set(self::$_config->timezone);
     }
 
@@ -183,23 +199,26 @@ class Mim {
         // - target file start with .
         // - target file is php or phtml
 
-        if (!file_exists($file_abs)){
+        if (!file_exists($file_abs)) {
             return false;
         }
 
-        if (is_dir($file_abs))
+        if (is_dir($file_abs)) {
             return false;
+        }
 
         $file_name = basename($file_abs);
-        if (substr($file_name, 0, 1) == '.')
+        if (substr($file_name, 0, 1) == '.') {
             return false;
+        }
 
         $file_ext = explode('.', $file_name);
         $file_ext = end($file_ext);
         $php_exts = ['php', 'phtml'];
 
-        if (in_array($file_ext, $php_exts))
+        if (in_array($file_ext, $php_exts)) {
             return false;
+        }
 
         return true;
     }
