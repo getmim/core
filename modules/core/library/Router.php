@@ -10,8 +10,8 @@ namespace Mim\Library;
 class Router
 {
 
-    protected static $all_routes;
-    protected static $all_gates;
+    public static $all_routes;
+    public static $all_gates;
 
     private static function _matchFilter(
         object $filter,
