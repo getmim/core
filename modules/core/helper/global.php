@@ -147,6 +147,25 @@ function module_exists(string $name): bool
     return in_array($name, Mim::$_config->_modules);
 }
 
+function numerize(int $total): string
+{
+    $suffix = '';
+    $conds = [
+        'm' => 1000000,
+        'k' => 1000
+    ];
+
+    foreach ($conds as $suff => $min) {
+        if ($total >= $min) {
+            $total = floor($total / $min);
+            $suffix = $suff;
+            break;
+        }
+    }
+
+    return number_format($total, 0, ',', '.') . $suffix;
+}
+
 function object_replace(object $origin, object $new): object
 {
     $cloned = clone $origin;
