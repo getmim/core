@@ -97,7 +97,7 @@ function get_prop_value(object $object, string $fields)
     $obj = clone $object;
     $keys = explode('.', $fields);
     foreach ($keys as $ky) {
-        $obj = $obj->$ky;
+        $obj = $obj->$ky ?? null;
         if (!is_object($obj)) {
             return $obj;
         }
